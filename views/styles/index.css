@@ -1,0 +1,23 @@
+.gp-el-collapse__header {
+    padding: 0;
+}
+
+.collapse__header__method,
+.collapse__header__status,
+.collapse__header__time {
+    padding: 10px;
+}
+
+.collapse__header__url {
+    flex: 1 1 auto;
+    padding: 10px;
+}
+
+.collapse__content {
+    padding: 5px;
+    overflow: auto;
+}
+
+.gp-tabs__links h4 {
+    margin: 0;
+}

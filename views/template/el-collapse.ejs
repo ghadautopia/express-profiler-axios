@@ -1,0 +1,53 @@
+<%- include(`${profilerViewsDir}/mixins/get-res-status.ejs`) -%>
+<%- include(`${profilerViewsDir}/mixins/format-timestamp.ejs`) -%>
+
+<article class="gp-el-collapse">
+    <header class="gp-el-collapse__header">
+        <section class="collapse__header__method color-white bg-<%= getResStatus({ statusCode: data.error && !data.request ? data.error.status : data.status }) %>">
+            <%= data.error && !data.request ? data.error.config.method : data.request.method %>
+        </section>
+        <section class="collapse__header__url">
+            <a href="<%= data.error ? data.error.config.url : data.request.res.responseUrl %>" target="_blank"><%= data.error && !data.request ? data.error.config.url : data.request.res.responseUrl %></a>
+        </section>
+        <section class="collapse__header__status color-<%= getResStatus({ statusCode: data.error && !data.request ? data.error.status : data.status }) %>">
+            <%= data.error && !data.request ? data.error.status : data.status %>
+        </section>
+        <section class="collapse__header__time">
+            <%= formatTimestamp(Math.ceil(time)) %>
+        </section>
+    </header>
+    <section class="gp-el-collapse__content">
+        <% if (data.error && !data.request) { %>
+            <%= JSON.stringify(data) %>
+        <% } else { %>
+            <section class="collapse__content gp-tabs">
+                <nav class="gp-tabs__links">
+                    <h4><a href="#" class="gp-tabs__link">Request</a></h4>
+                    <h4><a href="#" class="gp-tabs__link">Response</a></h4>
+                </nav>
+                <section class="gp-tabs__content">
+                    <%- include(`${profilerViewsDir}/pageviews/gp-el-dl.ejs`, {
+                        title: 'Headers',
+                        content: data.config.headers
+                    }) -%>
+                    <%- include(`${profilerViewsDir}/pageviews/gp-el.ejs`, { title: 'Raw Headers', content: data.request._header }) -%>
+                    <%- include(`${profilerViewsDir}/pageviews/gp-el-dl.ejs`, { title: 'Path', content: {
+                        URL: data.config.url,
+                        PATH: data.request.path
+                    } }) -%>
+                    <%- include(`${profilerViewsDir}/pageviews/gp-el-dl.ejs`, { title: 'Config', content: data.config }) -%>
+                    <%- include(`${profilerViewsDir}/pageviews/gp-el.ejs`, { title: 'Raw', content: { ...data.request, res: undefined } }) -%> 
+                </section>
+                <section class="gp-tabs__content">
+                    <%- include(`${profilerViewsDir}/pageviews/gp-el-dl.ejs`, { title: 'Headers', content: data.headers }) -%>
+                    <%- include(`${profilerViewsDir}/pageviews/gp-el-dl.ejs`, { title: 'Status', content: {
+                        'Status Message': data.statusText,
+                        'Status Code': data.status,
+                    } }) -%>
+                    <%- include(`${profilerViewsDir}/pageviews/gp-el.ejs`, { title: 'Data', content: data.data }) -%>
+                    <%- include(`${profilerViewsDir}/pageviews/gp-el.ejs`, { title: 'Raw', content: { ...data, request: undefined } }) -%> 
+                </section>
+            </section>
+        <% } %>
+    </section>
+</article>
